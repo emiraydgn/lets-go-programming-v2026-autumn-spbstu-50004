@@ -27,11 +27,22 @@ func main() {
 	switch operator {
 	case "+":
 		fmt.Println(first + second)
+
 	case "-":
 		fmt.Println(first - second)
+
 	case "*":
 		fmt.Println(first * second)
+
 	case "/":
-		fmt.Println(first / second)
+		if second == 0 {
+			fmt.Println("Division by zero")
+			return
+		}
+
+		fmt.Println(float64(first) / float64(second))
+
+	default:
+		fmt.Println("Invalid operation")
 	}
 }
