@@ -23,4 +23,15 @@ func main() {
 		fmt.Println("Invalid operation")
 		return
 	}
+
+	switch operator {
+	case "+":
+		fmt.Println(first + second)
+	case "-":
+		fmt.Println(first - second)
+	case "*":
+		fmt.Println(first * second)
+	case "/":
+		fmt.Println(first / second)
+	}
 }
