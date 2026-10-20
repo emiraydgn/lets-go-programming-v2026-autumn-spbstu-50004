@@ -21,6 +21,9 @@ func main() {
 			return
 		}
 
+		minTemp := minAllowedTemp
+		maxTemp := maxAllowedTemp
+
 		for range employeesCount {
 			var (
 				operator string
@@ -29,6 +32,25 @@ func main() {
 
 			if _, err := fmt.Scan(&operator, &temp); err != nil {
 				return
+			}
+
+			switch operator {
+			case ">=":
+				if temp > minTemp {
+					minTemp = temp
+				}
+			case "<=":
+				if temp < maxTemp {
+					maxTemp = temp
+				}
+			default:
+				return
+			}
+
+			if minTemp > maxTemp {
+				fmt.Println(-1)
+			} else {
+				fmt.Println(minTemp)
 			}
 		}
 	}
