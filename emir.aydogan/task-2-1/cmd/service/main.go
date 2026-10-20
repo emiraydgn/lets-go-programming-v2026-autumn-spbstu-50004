@@ -2,6 +2,11 @@ package main
 
 import "fmt"
 
+const (
+	minAllowedTemp = 15
+	maxAllowedTemp = 30
+)
+
 func main() {
 	var departmentsCount int
 
@@ -17,6 +22,14 @@ func main() {
 		}
 
 		for range employeesCount {
+			var (
+				operator string
+				temp     int
+			)
+
+			if _, err := fmt.Scan(&operator, &temp); err != nil {
+				return
+			}
 		}
 	}
 }
