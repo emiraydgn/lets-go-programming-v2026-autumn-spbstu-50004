@@ -11,6 +11,8 @@ func main() {
 	var departmentsCount int
 
 	if _, err := fmt.Scan(&departmentsCount); err != nil {
+		fmt.Println("Error: invalid departments count:", err)
+
 		return
 	}
 
@@ -18,6 +20,8 @@ func main() {
 		var employeesCount int
 
 		if _, err := fmt.Scan(&employeesCount); err != nil {
+			fmt.Println("Error: invalid employees count:", err)
+
 			return
 		}
 
@@ -31,6 +35,8 @@ func main() {
 			)
 
 			if _, err := fmt.Scan(&operator, &temp); err != nil {
+				fmt.Println("Error: invalid temperature request:", err)
+
 				return
 			}
 
@@ -44,6 +50,8 @@ func main() {
 					maxTemp = temp
 				}
 			default:
+				fmt.Println("Error: invalid operator:", operator)
+
 				return
 			}
 
