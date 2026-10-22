@@ -1,11 +1,54 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 const (
-	minAllowedTemp = 15
-	maxAllowedTemp = 30
+	minAllowedTemp  = 15
+	maxAllowedTemp  = 30
+	unavailableTemp = -1
 )
+
+var errInvalidOperator = errors.New("invalid operator")
+
+type temperatureRange struct {
+	minTemp int
+	maxTemp int
+}
+
+func newTemperatureRange() *temperatureRange {
+	return &temperatureRange{
+		minTemp: minAllowedTemp,
+		maxTemp: maxAllowedTemp,
+	}
+}
+
+func (r *temperatureRange) update(operator string, temp int) error {
+	switch operator {
+	case ">=":
+		if temp > r.minTemp {
+			r.minTemp = temp
+		}
+	case "<=":
+		if temp < r.maxTemp {
+			r.maxTemp = temp
+		}
+	default:
+		return fmt.Errorf("%w: %q", errInvalidOperator, operator)
+	}
+
+	return nil
+}
+
+func (r *temperatureRange) optimal() int {
+	if r.minTemp > r.maxTemp {
+		return unavailableTemp
+	}
+
+	return r.minTemp
+}
 
 func main() {
 	var departmentsCount int
@@ -25,8 +68,7 @@ func main() {
 			return
 		}
 
-		minTemp := minAllowedTemp
-		maxTemp := maxAllowedTemp
+		tempRange := newTemperatureRange()
 
 		for range employeesCount {
 			var (
@@ -40,26 +82,13 @@ func main() {
 				return
 			}
 
-			switch operator {
-			case ">=":
-				if temp > minTemp {
-					minTemp = temp
-				}
-			case "<=":
-				if temp < maxTemp {
-					maxTemp = temp
-				}
-			default:
-				fmt.Println("Error: invalid operator:", operator)
+			if err := tempRange.update(operator, temp); err != nil {
+				fmt.Println("Error:", err)
 
 				return
 			}
 
-			if minTemp > maxTemp {
-				fmt.Println(-1)
-			} else {
-				fmt.Println(minTemp)
-			}
+			fmt.Println(tempRange.optimal())
 		}
 	}
 }
