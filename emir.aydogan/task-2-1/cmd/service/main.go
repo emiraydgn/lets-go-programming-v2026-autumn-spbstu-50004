@@ -9,6 +9,9 @@ const (
 	minAllowedTemp  = 15
 	maxAllowedTemp  = 30
 	unavailableTemp = -1
+
+	greaterOrEqual = ">="
+	lessOrEqual    = "<="
 )
 
 var errInvalidOperator = errors.New("invalid operator")
@@ -27,11 +30,11 @@ func newTemperatureRange() *temperatureRange {
 
 func (r *temperatureRange) update(operator string, temp int) error {
 	switch operator {
-	case ">=":
+	case greaterOrEqual:
 		if temp > r.minTemp {
 			r.minTemp = temp
 		}
-	case "<=":
+	case lessOrEqual:
 		if temp < r.maxTemp {
 			r.maxTemp = temp
 		}
