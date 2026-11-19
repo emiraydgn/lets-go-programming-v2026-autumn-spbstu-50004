@@ -6,6 +6,7 @@ import (
 
 	"github.com/emiraydgn/task-3/internal/cbr"
 	"github.com/emiraydgn/task-3/internal/config"
+	"github.com/emiraydgn/task-3/internal/jsonout"
 )
 
 func main() {
@@ -22,5 +23,7 @@ func main() {
 		panic(fmt.Errorf("load currencies: %w", err))
 	}
 
-	fmt.Println("Loaded currencies:", len(currencies))
+	if err := jsonout.Save(cfg.OutputFile, currencies); err != nil {
+		panic(fmt.Errorf("save JSON: %w", err))
+	}
 }
