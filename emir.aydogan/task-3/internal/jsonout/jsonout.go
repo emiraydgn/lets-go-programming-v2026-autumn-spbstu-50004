@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	dirPermissions  = 0755
-	filePermissions = 0644
+	dirPermissions  = 0o755
+	filePermissions = 0o644
 )
 
 func Save(path string, currencies []cbr.Currency) error {
@@ -27,7 +27,7 @@ func Save(path string, currencies []cbr.Currency) error {
 	}
 
 	if err := os.WriteFile(path, data, filePermissions); err != nil {
-		return fmt.Errorf("write JSON file: %w", err)
+		return fmt.Errorf("write JSON: %w", err)
 	}
 
 	return nil
