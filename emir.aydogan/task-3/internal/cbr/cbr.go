@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -66,6 +67,10 @@ func Load(path string) ([]Currency, error) {
 			Value:    value,
 		})
 	}
+
+	sort.SliceStable(currencies, func(i, j int) bool {
+		return currencies[i].Value > currencies[j].Value
+	})
 
 	return currencies, nil
 }
