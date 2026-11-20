@@ -78,8 +78,8 @@ func parseCurrency(entry currencyXML) (Currency, error) {
 	}
 
 	valueText := strings.ReplaceAll(strings.TrimSpace(entry.Value), ",", ".")
-	value, err := strconv.ParseFloat(valueText, 64)
 
+	value, err := strconv.ParseFloat(valueText, 64)
 	if err != nil {
 		return Currency{}, fmt.Errorf("invalid Value %q: %w", entry.Value, err)
 	}
