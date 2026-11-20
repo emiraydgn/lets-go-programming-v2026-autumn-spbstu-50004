@@ -1,7 +1,9 @@
 package cbr
 
 import (
+	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -11,6 +13,8 @@ import (
 
 	"golang.org/x/net/html/charset"
 )
+
+var errNonFiniteValue = errors.New("non-finite currency value")
 
 type Currency struct {
 	NumCode  int     `json:"num_code"`
@@ -29,20 +33,13 @@ type currencyXML struct {
 	Value    string `xml:"Value"`
 }
 
-func Load(path string) (currencies []Currency, loadErr error) {
-	file, err := os.Open(path)
+func Load(path string) ([]Currency, error) {
+	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("open XML file: %w", err)
+		return nil, fmt.Errorf("read XML file: %w", err)
 	}
 
-	defer func() {
-		if err := file.Close(); err != nil && loadErr == nil {
-			currencies = nil
-			loadErr = fmt.Errorf("close XML file: %w", err)
-		}
-	}()
-
-	decoder := xml.NewDecoder(file)
+	decoder := xml.NewDecoder(bytes.NewReader(data))
 	decoder.CharsetReader = charset.NewReaderLabel
 
 	var document currencyDocument
@@ -50,7 +47,7 @@ func Load(path string) (currencies []Currency, loadErr error) {
 		return nil, fmt.Errorf("decode XML: %w", err)
 	}
 
-	currencies = make([]Currency, 0, len(document.Entries))
+	currencies := make([]Currency, 0, len(document.Entries))
 
 	for _, entry := range document.Entries {
 		currency, err := parseCurrency(entry)
@@ -82,12 +79,13 @@ func parseCurrency(entry currencyXML) (Currency, error) {
 
 	valueText := strings.ReplaceAll(strings.TrimSpace(entry.Value), ",", ".")
 	value, err := strconv.ParseFloat(valueText, 64)
+
 	if err != nil {
 		return Currency{}, fmt.Errorf("invalid Value %q: %w", entry.Value, err)
 	}
 
 	if math.IsNaN(value) || math.IsInf(value, 0) {
-		return Currency{}, fmt.Errorf("non-finite currency value %q", entry.Value)
+		return Currency{}, fmt.Errorf("invalid Value %q: %w", entry.Value, errNonFiniteValue)
 	}
 
 	return Currency{
