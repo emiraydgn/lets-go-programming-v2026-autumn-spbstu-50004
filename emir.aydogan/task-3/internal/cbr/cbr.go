@@ -20,9 +20,9 @@ var (
 )
 
 type Currency struct {
-	NumCode  numericCode `xml:"NumCode" json:"num_code"`
-	CharCode string      `xml:"CharCode" json:"char_code"`
-	Value    *rate       `xml:"Value" json:"value"`
+	NumCode  numericCode `json:"num_code"  xml:"NumCode"`
+	CharCode string      `json:"char_code" xml:"CharCode"`
+	Value    *rate       `json:"value"     xml:"Value"`
 }
 
 type currencyDocument struct {
@@ -79,7 +79,9 @@ func Load(path string) ([]Currency, error) {
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	document := currencyDocument{Entries: make([]Currency, 0)}
+	var document currencyDocument
+
+	document.Entries = make([]Currency, 0)
 	if err := decoder.Decode(&document); err != nil {
 		return nil, fmt.Errorf("decode XML: %w", err)
 	}
